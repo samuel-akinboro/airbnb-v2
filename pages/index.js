@@ -1,9 +1,10 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import Header from '../components/Header'
-import HeroImage from '../components/HeroImage'
+import Head from "next/head";
+import Header from "../components/Header";
+import HeroImage from "../components/HeroImage";
+import MediumCard from "../components/MediumCard";
+import SmallCard from "../components/SmallCard";
 
-export default function Home({exploreData}) {
+export default function Home({ exploreData, liveData }) {
   return (
     <div>
       <Head>
@@ -13,25 +14,49 @@ export default function Home({exploreData}) {
       </Head>
       <Header />
       <HeroImage />
-      <main className='container px-8 sm:px-16 lg:px-20 mx-auto xl:px-6'>
-        <section className='pt-6 md:pt-10 lg:pt-16'>
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold lg:font-medium">Explore Nearby</h2>
-          {exploreData.map(data => (
-            <h1>{data.location}</h1>
-          ))}
+      <main className="container px-8 sm:px-16 lg:px-20 mx-auto 2xl:px-6">
+        <section className="pt-6 md:pt-10 lg:pt-16">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold lg:font-medium">
+            Explore Nearby
+          </h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {exploreData?.map(({location, distance, img}) => (
+              <SmallCard 
+                key={img}
+                location={location} 
+                distance={distance}
+                img={img}
+              />
+            ))}
+          </div>
+        </section>
+        <section className="pt-6 md:pt-10 lg:pt-16">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold lg:font-medium">
+            Live Anywhere
+          </h2>
+          <div className="pt-4 flex space-x-3 overflow-x-scroll overflow-y-hidden scrollbar-hide">
+            {liveData?.map(({title, img}) => (
+              <MediumCard
+                key={img}
+                title={title}
+                img={img}
+              />
+            ))}
+          </div>
         </section>
       </main>
     </div>
-  )
+  );
 }
 
 export async function getStaticProps(){
-  const exploreData = await fetch("links.papareact.com/pyp")
-  .then(res => res.json())
-  
+  const exploreData = await fetch('https://links.papareact.com/pyp').then(res => res.json());
+  const liveData = await fetch('https://links.papareact.com/zp1').then(res => res.json());
+
   return {
     props: {
-      exploreData
+      exploreData,
+      liveData
     }
   }
 }
